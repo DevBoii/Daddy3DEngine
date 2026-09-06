@@ -14,6 +14,11 @@ namespace DaddyEngine
 		m_RendererID = CreateShader(source.VertexSource, source.FragmentSource);
 	}
 
+	Shader::Shader(const std::string& vertexSource, const std::string& fragmentSource)
+	{
+		m_RendererID = CreateShader(vertexSource, fragmentSource);
+	}
+
 	Shader::~Shader()
 	{
 		glDeleteProgram(m_RendererID);
@@ -106,6 +111,21 @@ namespace DaddyEngine
 	void Shader::SetUniform1f(const std::string& name, float value) 
 	{
 		glUniform1f(GetUniformLocation(name), value);
+	}
+
+	void Shader::SetUniform3f(const std::string& name, float v0, float v1, float v2)
+	{
+		glUniform3f(GetUniformLocation(name), v0, v1, v2);
+	}
+
+	void Shader::SetUniformVec3(const std::string& name, const glm::vec3 vec)
+	{
+		glUniform3f(GetUniformLocation(name), vec.x, vec.y, vec.z);
+	}
+
+	void Shader::SetUniform1i(const std::string& name, int value)
+	{
+		glUniform1i(GetUniformLocation(name), value);
 	}
 
 	ShaderProgramSource Shader::ParseShader(const std::string& filepath)

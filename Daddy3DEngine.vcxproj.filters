@@ -99,6 +99,27 @@
     <ClCompile Include="Daddy3DEngine\src\Engine\Core\Assets\AssetManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Daddy3DEngine\src\Engine\Renderer\DebugRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Daddy3DEngine\src\Engine\Editor\ContentBrowserPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Daddy3DEngine\src\Engine\Renderer\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Daddy3DEngine\src\stb_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Daddy3DEngine\src\Engine\Renderer\Texture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Daddy3DEngine\src\Engine\Renderer\Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Daddy3DEngine\src\Engine\Editor\ConsolePanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Daddy3DEngine\src\Engine\Core\Application.h">
@@ -176,7 +197,34 @@
     <ClInclude Include="Daddy3DEngine\src\Engine\Core\Assets\AssetManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Daddy3DEngine\src\Engine\Scene\Components\Light.h">
+    <ClInclude Include="Daddy3DEngine\src\Engine\Scene\Components\LightComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Daddy3DEngine\src\Engine\Renderer\DebugRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Daddy3DEngine\src\Engine\Editor\GizmoSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Daddy3DEngine\src\Engine\Editor\ContentBrowserPanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Daddy3DEngine\src\Engine\Renderer\Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Daddy3DEngine\src\Engine\Renderer\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Daddy3DEngine\src\Engine\Renderer\Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Daddy3DEngine\src\Engine\Scene\Components\RelationshipComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Daddy3DEngine\src\Engine\Editor\ConsolePanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Daddy3DEngine\src\Engine\Editor\ProfilerPanel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

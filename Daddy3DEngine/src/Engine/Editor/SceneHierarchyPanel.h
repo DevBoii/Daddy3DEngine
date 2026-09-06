@@ -6,6 +6,7 @@
 
 #include "InspectorPanel.h"
 
+
 namespace DaddyEngine
 {
 	class SceneHierarchyPanel
@@ -19,6 +20,7 @@ namespace DaddyEngine
 		~SceneHierarchyPanel() = default;
 
 		void OnImGuiRender();
+		void DrawEntityNode(Registry& registry, uint32_t entityID, std::vector<uint32_t>& entitiesToDestroy, Scene* activeScene);
 
 		const std::set<uint32_t>& GetSelectedEntities() const
 		{
@@ -30,6 +32,6 @@ namespace DaddyEngine
 			m_SelectedEntities.clear();
 		}
 
-		void CreatEmptyEntity(Scene* activeScene);
+		uint32_t CreatEmptyEntity(Scene* activeScene);
 	};
 }

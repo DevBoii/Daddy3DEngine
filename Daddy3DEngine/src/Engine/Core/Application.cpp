@@ -13,6 +13,7 @@
 #include "Engine/Scene/SceneManager.h"
 #include "Sandbox/Scenes/SandboxScene.h" 
 #include "Engine/Core/Assets/AssetManager.h"
+#include "Engine/Editor/GizmoSettings.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -21,6 +22,7 @@
 namespace DaddyEngine
 {
 	Application* Application::s_Instance = nullptr;
+	Camera* Application::m_EditorCamera = nullptr;
 
 	Application::Application()
 	{
@@ -118,10 +120,12 @@ namespace DaddyEngine
 			Scene* activeScene = SceneManager::GetActiveScene();
 			if (activeScene)
 			{
-				activeScene->OnUpdate(ts);
+				activeScene->OnUpdate(ts, *GetEditorCamera());
 			}
 
 			renderer.EndScene();
+			if(DaddyEngine::GizmoSettings::drawGizmos)
+				DaddyEngine::DebugRenderer::Flush(m_EditorCamera->GetViewProjection());
 
 			// Unbind: Stop rendering to the texture
 			m_Framebuffer->Unbind();
@@ -159,6 +163,6 @@ namespace DaddyEngine
 	int Application::GetHeight() {
 		int w, h;
 		glfwGetFramebufferSize(m_Window, &w, &h);
-		return w;
+		return h;
 	}
 }

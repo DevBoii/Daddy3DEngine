@@ -34,7 +34,7 @@ namespace DaddyEngine
 		GLFWwindow* GetWindow() const { return m_Window; }
 		inline int GetWidth() const { return WIDTH; }
 		inline int GetHeight() const { return HEIGHT; }
-		Camera* GetEditorCamera() const { return m_EditorCamera; }
+		static Camera* GetEditorCamera() { return m_EditorCamera; }
 		Framebuffer* GetFramebuffer() const { return m_Framebuffer; }
 
 		int GetWidth();
@@ -43,7 +43,7 @@ namespace DaddyEngine
 	private:
 		static Application* s_Instance;
 		GLFWwindow* m_Window;
-		Camera* m_EditorCamera;
+		static Camera* m_EditorCamera;
 		Framebuffer* m_Framebuffer;
 	};
 }

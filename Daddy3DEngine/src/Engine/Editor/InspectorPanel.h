@@ -7,6 +7,7 @@
 
 #include "Engine/Scene/Components/IdentityComponent.h"
 #include "Engine/Scene/Components/MeshRenderer.h"
+#include "Engine/Scene/Components/LightComponent.h"
 #include "Engine/Renderer/Mesh.h"
 #include "Engine/Renderer/Transform.h"
 #include "Engine/Core/Assets/AssetManager.h"
@@ -63,6 +64,11 @@ namespace DaddyEngine
 					{
 						MeshRendererPanel(component);
 					}
+					else if constexpr (std::is_same_v <T, LightComponent>)
+					{
+						LightComponentPanel(component);
+					}
+
 					ImGui::TreePop();
 				}
 
@@ -90,46 +96,148 @@ namespace DaddyEngine
 
 		void MeshRendererPanel(MeshRenderer& component)
 		{
-			const char* availablePrimitives[] = { "Primitive::Cube", "Primitive::Pyramid", "Primitive::Plane" };
-
-			ImGui::Text("MeshRenderer Component Attached");
+			ImGui::Text("Mesh Renderer");
 			ImGui::Checkbox("Visible", &component.IsVisible);
-			ImGui::Checkbox("CastShadow", &component.castShadow);
+			ImGui::Checkbox("Cast Shadow", &component.CastShadow);
+
 			ImGui::Spacing();
 
-			ImGui::Text("Current Path: ");
-			ImGui::SameLine();
-			ImGui::TextColored(ImVec4(1.0f, 0.0f, 0.0f, 1.0f), component.ModelPath.c_str());
-			ImGui::Spacing();
-
-			ImGui::Text("Mesh Asset: ");
+			ImGui::Text("Model");
 			ImGui::SameLine(100);
 
-			if (ImGui::BeginCombo("##MeshSelector", "Select Mesh"))
-			{
-				for (int i = 0; i < 3; i++)
-				{
-					bool isSelected = component.ModelPath == availablePrimitives[i];
+			ImGui::PushID("MeshRenderer");
+			const char* buttonText = component.ModelAsset ? std::filesystem::path(component.ModelPath).filename().string().c_str() : "Empty";
 
-					if (ImGui::Selectable(availablePrimitives[i], isSelected))
-					{
-						component.ModelPath = availablePrimitives[i];
-						component.MeshAsset = AssetManager::GetOrCreateMesh(component.ModelPath);
-					}
-					if (isSelected)
-						ImGui::SetItemDefaultFocus();
-				}
-				ImGui::EndCombo();
-			}
-			// Display Index Count for performance debugging
-			if (component.MeshAsset != nullptr)
+			ImGui::Button(buttonText, ImVec2(220, 0));
+
+			// Drag & Drop Target
+			if (ImGui::BeginDragDropTarget())
 			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MODEL_PATH"))
+				{
+					const char* path = (const char*)payload->Data;
+
+					component.ModelPath = path;
+					component.ModelAsset = AssetManager::GetOrCreateModel(path);
+				}
+
+				ImGui::EndDragDropTarget();
+			}
+
+			ImGui::TextDisabled("Path: %s", component.ModelPath.c_str());
+			ImGui::PopID();
+
+			// --- MATERIAL SECTION ---
+			if (ImGui::TreeNodeEx("Material", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				// Ensure component has a valid material allocated
+				if (!component.MaterialAsset)
+					component.MaterialAsset = std::make_shared<Material>();
+
+				// Detect if multiple entities use this same material
+				if (component.MaterialAsset.use_count() > 1)
+				{
+					ImGui::Text("Shared Material (%d users)", component.MaterialAsset.use_count());
+					ImGui::SameLine();
+				}
+
+				auto& mat = component.MaterialAsset;
+
+				// 1. Color Edit Control
+				ImGui::Text("Albedo Color");
+				ImGui::SameLine();
+				ImGui::ColorEdit3("##Albedo Color", &mat->AlbedoColor.r, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_Float);
 				ImGui::Spacing();
-				ImGui::TextDisabled("Indices Count: %u", component.MeshAsset->GetIndexCount());
+
+				// Albedo Map
+				std::string albedoButtonText = component.MaterialAsset->AlbedoMap ? "Texture Loaded" : "None (Drag Texture Here)";
+				ImGui::Text("Albedo Map");
+				ImGui::SameLine();
+				ImGui::Button(albedoButtonText.c_str(), ImVec2(150, 30));
+
+				if (ImGui::BeginDragDropTarget())
+				{
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM_TEXTURE"))
+					{
+						const char* path = (const char*)payload->Data;
+						component.MaterialAsset->AlbedoMap = std::make_shared<Texture2D>(path);
+					}
+					ImGui::EndDragDropTarget();
+				}
+
+				if (component.MaterialAsset->AlbedoMap)
+				{
+					ImGui::SameLine();
+					if (ImGui::Button("X"))
+					{
+						component.MaterialAsset->AlbedoMap = nullptr;
+					}
+				}
+				ImGui::TreePop();
 			}
 		}
 
-		using ComponentList = std::tuple<Transform, MeshRenderer>;
+		void LightComponentPanel(LightComponent& component)
+		{
+			ImGui::Checkbox("Is Active", &component.isActive);
+			ImGui::Spacing();
+
+			ImGui::TextDisabled("Light Settings");
+
+			//Light Type-----------------
+			static const char* lightTypeNames[] =
+			{
+				"Directional",
+				"Point",
+				"Spot"
+			};
+			ImGui::Text("Light Type");
+			ImGui::SameLine();
+			int current = static_cast<int>(component.Type);
+			if (ImGui::Combo("##LightType", &current, lightTypeNames, IM_ARRAYSIZE(lightTypeNames)))
+			{
+				component.Type = static_cast<LightComponent::LightType>(current);
+			}
+			ImGui::Spacing();
+			//-----------------------
+			//Light Color
+			ImGui::Text("Light Color");
+			ImGui::SameLine();
+			ImGui::ColorEdit3( "##LightColor", &component.lightColor.x, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_Float);
+			ImGui::Spacing();
+			//
+
+
+			ImGui::Text("Intensity");
+			ImGui::SameLine();
+			ImGui::SliderFloat("##Intensity", &component.intensity, 0.0f, 10.0f, "%.2f");
+			ImGui::Spacing();
+
+			ImGui::Text("Ambient Strength");
+			ImGui::SameLine();
+			ImGui::SliderFloat("##Ambient Strength", &component.ambientStrength, 0.0f, 1.0f);
+
+			switch (component.Type)
+			{
+			case LightComponent::LightType::Spot:
+			{
+				ImGui::Separator();
+				ImGui::TextDisabled("Spot Light Settings");
+				break;
+			}
+
+			case LightComponent::LightType::Point:
+			{
+				ImGui::Separator();
+				ImGui::TextDisabled("Point Light Settings");
+				break;
+			}
+			default:
+				break;
+			}
+		}
+
+		using ComponentList = std::tuple<Transform, MeshRenderer, LightComponent>;
 
 	public:
 		InspectorPanel() = default;

@@ -8,6 +8,7 @@
 #include "Engine/Core/Timestep.h"
 #include "Engine/Core/Camera.h"
 #include "Engine/Renderer/FrameBuffer.h"
+#include "Engine/Editor/GizmoSettings.h"
 
 #include <cstring>
 
@@ -36,6 +37,7 @@ namespace DaddyEngine
 
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 330");
+        s_EditorPanel.OnStart();
     }
 
     void ImGuiLayer::OnDetach()
@@ -73,40 +75,10 @@ namespace DaddyEngine
 
         //MainWindow();
         SceneWindow();
-        ProfilerWindow(ts);
-        s_EdditorPanel.OnImGuiRender();
-    }
-
-    void ImGuiLayer::ProfilerWindow(Timestep ts)
-    {
-        ImGuiWindowFlags flags = ImGuiWindowFlags_NoCollapse;
-
-        if (ImGui::Begin("Output", nullptr, flags))
-        {
-            // 1. Start the Tab Bar
-            if (ImGui::BeginTabBar("BottomTabs"))
-            {
-                // 2. The Profiler Tab
-                if (ImGui::BeginTabItem("Profiler"))
-                {
-                    float fps = ts.GetSeconds() > 0.0f ? (1.0f / ts.GetSeconds()) : 0.0f;
-                    ImGui::Text("FPS: %.1f", fps);
-                    ImGui::Text("Frame Time: %.3f ms", ts.GetMilliseconds());
-                    ImGui::EndTabItem();
-                }
-
-                // 3. The Console Tab
-                if (ImGui::BeginTabItem("Console"))
-                {
-                    ImGui::TextColored(ImVec4(1, 1, 0, 1), "[Warning]: Low light in scene.");
-                    if (ImGui::Button("Clear Log")) { /* Logic */ }
-                    ImGui::EndTabItem();
-                }
-
-                ImGui::EndTabBar();
-            }
-        }
-        ImGui::End();
+        s_EditorPanel.OnImGuiRender();
+        contentBrowserPanel.OnImGuiRender();
+        consolePanel.OnImGuiRender();
+        ProfilerPanel::OnImGuiRender(ts);
     }
 
     void ImGuiLayer::SceneWindow()
@@ -120,17 +92,38 @@ namespace DaddyEngine
 
         if (ImGui::BeginMenuBar())
         {
-            if (ImGui::BeginMenu("CameraSettings", window_flags))
+            if (ImGui::BeginMenu("CameraSettings"))
             {
                 if (camera)
                 {
                     ImGui::SliderFloat("Speed", &camera->cameraSpeed, 0.5f, 50.0f);
                     if (ImGui::Button("Reset Speed")) camera->cameraSpeed = 5.0f;
+                    ImGui::Separator();
+
+                    ImGui::SliderFloat("Camera sensitivity", &camera->sensitivity, 0.1f, 1.0f);
+                    if (ImGui::Button("Reset sensitivity")) camera->sensitivity = 0.1f;
+                    ImGui::Separator();
+
+                    if (ImGui::SliderFloat("Camera Near Plane", &camera->m_nearPlane, 0.1f, 10.0f))
+                        camera->CalculateVP();
+                    if (ImGui::Button("Reset Camera Near Plane"))
+                    {
+                        camera->m_nearPlane = 0.1f;
+                        camera->CalculateVP();
+                    }
+                    if (ImGui::SliderFloat("Camera Far Plane", &camera->m_farPlane, 0.1f, 500.0f))
+                        camera->CalculateVP();
+                    if (ImGui::Button("Reset Camera Far Plane"))
+                    {
+                        camera->m_farPlane = 100.0f;
+                        camera->CalculateVP();
+                    }
 
                     ImGui::Separator();
 
                     if (ImGui::SliderFloat("Fov", &camera->m_FOV, 0.5f, 120.0f))
                         camera->CalculateVP();
+                    
                     if (ImGui::Button("Reset FOV"))
                     {
                         camera->m_FOV = 45.0f;
@@ -140,8 +133,18 @@ namespace DaddyEngine
                 ImGui::EndMenu();
             }
 
-            ImGui::Checkbox("WireFrameMode", &m_App.m_WireframeMode);
+            ImGui::Checkbox("WireFrame", &m_App.m_WireframeMode);
 
+            ImGui::Checkbox("##drawGizmos", &DaddyEngine::GizmoSettings::drawGizmos);
+            if (ImGui::BeginMenu("Gizmos"))
+            {
+                ImGui::Checkbox("Transform", &DaddyEngine::GizmoSettings::debugTransform);
+                ImGui::Checkbox("DirectionalLight", &DaddyEngine::GizmoSettings::debugDirectionalLight);
+                ImGui::Checkbox("Grid", &DaddyEngine::GizmoSettings::debugGrid);
+                ImGui::Checkbox("WorldAxis", &DaddyEngine::GizmoSettings::debugWorldAxis);
+
+                ImGui::EndMenu();
+            }
             ImGui::EndMenuBar();
         }
 

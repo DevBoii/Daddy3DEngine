@@ -6,39 +6,12 @@ namespace DaddyEngine
 	void AssetManager::Init()
 	{
 		std::cout << "[AssetManager] Initializing Core Memory Repositories...\n";
-
-		s_MeshCache["Primitive::Cube"] = std::make_shared<Mesh>(ConvertShapeToMeshData(CubeShape()));
-		s_MeshCache["Primitive::Pyramid"] = std::make_shared<Mesh>(ConvertShapeToMeshData(PyramidShape()));
-		s_MeshCache["Primitive::Plane"] = std::make_shared<Mesh>(ConvertShapeToMeshData(PlaneShape()));
-
-		std::cout << "[AssetManager] Static Primitives Cached Successfully!\n";
 	}
 
 	void AssetManager::Shutdown()
 	{
 		std::cout << "[AssetManager] Clearing Cached Engine Assets Storage Pools...\n";
-		s_MeshCache.clear();
-	}
-
-	std::shared_ptr<Mesh> AssetManager::GetOrCreateMesh(const std::string& assetPath)
-	{
-		// Check 1: i already available
-		auto it = s_MeshCache.find(assetPath);
-		if (it != s_MeshCache.end())
-		{
-			return it->second;
-		}
-
-		// Check 2:  FUTURE 3D MODEL LOADER HOOK 
-		//("Assets/Models/Car.obj"),
-		if (assetPath.find("Primitive::") == std::string::npos)
-		{
-			std::cout << "[AssetManager] Streaming new external dynamic asset path: " << assetPath << "\n";
-		}
-
-		// Fallback safe reference trigger if asset invalid
-		std::cout << "[AssetManager] Warning: Target reference path invalid! Fallback to standard Cube.\n";
-		return s_MeshCache["Primitive::Cube"];
+		s_ModelCache.clear();
 	}
 
 	MeshData AssetManager::ConvertShapeToMeshData(const Shape& shape)
@@ -77,5 +50,39 @@ namespace DaddyEngine
 		}
 
 		return data;
+	}
+
+	std::shared_ptr<Model> AssetManager::GetOrCreateModel(const std::string& assetPath)
+	{
+		// Already loaded?
+		auto it = s_ModelCache.find(assetPath);
+
+		if (it != s_ModelCache.end())
+			return it->second;
+
+		std::shared_ptr<Model> model;
+
+		// Primitive
+		if (assetPath == "Primitive::Cube")
+		{
+			model = std::make_shared<Model>(ConvertShapeToMeshData(CubeShape()));
+		}
+		else if (assetPath == "Primitive::Plane")
+		{
+			model = std::make_shared<Model>(ConvertShapeToMeshData(PlaneShape()));
+		}
+		else if (assetPath == "Primitive::Pyramid")
+		{
+			model = std::make_shared<Model>(ConvertShapeToMeshData(PyramidShape()));
+		}
+		else
+		{
+			// External model (.obj/.fbx/.gltf...)
+			model = std::make_shared<Model>(assetPath);
+		}
+
+		s_ModelCache[assetPath] = model;
+
+		return model;
 	}
 }

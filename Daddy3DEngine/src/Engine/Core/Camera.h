@@ -10,7 +10,7 @@ namespace DaddyEngine
 	{
 	private:
 
-		glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+		glm::vec3 cameraPos = glm::vec3(0.0f, 5.0f, 7.0f);
 		glm::vec3 camTarget = glm::vec3(0.0f, 0.0f, 0.0f);
 
 		glm::vec3 camUp = glm::vec3(0.0f);
@@ -18,9 +18,6 @@ namespace DaddyEngine
 		glm::vec3 camForward = glm::vec3(0.0f);
 
 		glm::mat4 m_ViewProjection;
-
-		float m_nearPlane = 0.1f;
-		float m_farPlane = 100.0f;
 		int m_Width = 0;
 		int m_Height = 0;
 
@@ -42,5 +39,8 @@ namespace DaddyEngine
 
 		float m_FOV;
 		float cameraSpeed = 5;
+		float sensitivity = 0.1f;
+		float m_nearPlane = 0.1f;
+		float m_farPlane = 100.0f;
 	};
 }

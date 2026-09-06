@@ -1,4 +1,5 @@
 #include "Mesh.h"
+#include "Engine/Renderer/Material.h"
 
 namespace DaddyEngine
 {
@@ -6,10 +7,10 @@ namespace DaddyEngine
 	{
 		m_IndexCount = (unsigned int)data.Indices.size();
 
-		m_VAO = std::make_unique<VertexArray>();
+		m_VAO = std::make_shared<VertexArray>();
 		m_VAO->Bind();
 
-		m_VBO = std::make_unique<VertexBuffer>(&data.Vertices[0], data.Vertices.size() * sizeof(Vertex));
+		m_VBO = std::make_shared<VertexBuffer>(&data.Vertices[0], data.Vertices.size() * sizeof(Vertex));
 
 		std::vector<BufferElement> layout = {
 			{ GL_FLOAT, 3, false }, // Layout 0: Position (3 floats - XYZ)
@@ -19,7 +20,7 @@ namespace DaddyEngine
 		};
 
 		m_VAO->AddBuffer(*m_VBO, layout);
-		m_IBO = std::make_unique<IndexBuffer>(&data.Indices[0], m_IndexCount);
+		m_IBO = std::make_shared<IndexBuffer>(&data.Indices[0], m_IndexCount);
 		m_VAO->Unbind();
 	}
 

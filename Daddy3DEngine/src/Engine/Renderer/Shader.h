@@ -26,6 +26,7 @@ namespace DaddyEngine
 	public:
 
 		Shader(const std::string& filepath);
+		Shader(const std::string& vertexSource, const std::string& fragmentSource);
 		~Shader();
 
 		void Bind();
@@ -42,7 +43,10 @@ namespace DaddyEngine
 		int GetUniformLocation(const std::string& name);
 		inline unsigned int GetShaderID() { return m_RendererID; }
 		void SetUniform1f(const std::string& name, float value);
+		void SetUniform3f(const std::string& name, float v0, float v1, float v2);
+		void SetUniformVec3(const std::string& name, const glm::vec3 vec);
 		void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
 		void SetUniformMat4(const std::string& name, const glm::mat4& mat4);
+		void SetUniform1i(const std::string& name, int value);
 	};
 }

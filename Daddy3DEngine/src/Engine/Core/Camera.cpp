@@ -77,7 +77,6 @@ namespace DaddyEngine
                 m_LastMouseX = mouseX;
                 m_LastMouseY = mouseY;
 
-                float sensitivity = 0.1f;
                 m_Yaw += offsetX * sensitivity;
                 m_Pitch += offsetY * sensitivity;
 

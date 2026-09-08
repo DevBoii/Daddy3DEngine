@@ -42,7 +42,7 @@ namespace DaddyEngine
 
 	Application::~Application()
 	{
-		// 2. Clear Scene allocation on close
+		// Clear Scene allocation on close
 		SceneManager::Shutdown();
 
 		if (m_Window)

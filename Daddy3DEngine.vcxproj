@@ -176,6 +176,7 @@
     <ClCompile Include="Daddy3DEngine\src\Engine\Core\Main.cpp" />
     <ClCompile Include="Daddy3DEngine\src\Engine\Editor\ConsolePanel.cpp" />
     <ClCompile Include="Daddy3DEngine\src\Engine\Editor\ContentBrowserPanel.cpp" />
+    <ClCompile Include="Daddy3DEngine\src\Engine\Editor\EnvironmentPanel.cpp" />
     <ClCompile Include="Daddy3DEngine\src\Engine\Editor\InspectorPanel.cpp" />
     <ClCompile Include="Daddy3DEngine\src\Engine\Editor\SceneHierarchyPanel.cpp" />
     <ClCompile Include="Daddy3DEngine\src\Engine\glad.c" />
@@ -187,6 +188,7 @@
     <ClCompile Include="Daddy3DEngine\src\Engine\Renderer\Model.cpp" />
     <ClCompile Include="Daddy3DEngine\src\Engine\Renderer\Renderer.cpp" />
     <ClCompile Include="Daddy3DEngine\src\Engine\Renderer\Shader.cpp" />
+    <ClCompile Include="Daddy3DEngine\src\Engine\Renderer\Skybox.cpp" />
     <ClCompile Include="Daddy3DEngine\src\Engine\Renderer\Texture.cpp" />
     <ClCompile Include="Daddy3DEngine\src\Engine\Renderer\VertexArray.cpp" />
     <ClCompile Include="Daddy3DEngine\src\Engine\Renderer\VertexBuffer.cpp" />
@@ -215,6 +217,7 @@
     <ClInclude Include="Daddy3DEngine\src\Engine\Editor\ConsolePanel.h" />
     <ClInclude Include="Daddy3DEngine\src\Engine\Editor\ContentBrowserPanel.h" />
     <ClInclude Include="Daddy3DEngine\src\Engine\Editor\EditorLayer.h" />
+    <ClInclude Include="Daddy3DEngine\src\Engine\Editor\EnvironmentPanel.h" />
     <ClInclude Include="Daddy3DEngine\src\Engine\Editor\GizmoSettings.h" />
     <ClInclude Include="Daddy3DEngine\src\Engine\Editor\InspectorPanel.h" />
     <ClInclude Include="Daddy3DEngine\src\Engine\Editor\ProfilerPanel.h" />
@@ -227,6 +230,7 @@
     <ClInclude Include="Daddy3DEngine\src\Engine\Renderer\Model.h" />
     <ClInclude Include="Daddy3DEngine\src\Engine\Renderer\Renderer.h" />
     <ClInclude Include="Daddy3DEngine\src\Engine\Renderer\Shader.h" />
+    <ClInclude Include="Daddy3DEngine\src\Engine\Renderer\Skybox.h" />
     <ClInclude Include="Daddy3DEngine\src\Engine\Renderer\Texture.h" />
     <ClInclude Include="Daddy3DEngine\src\Engine\Renderer\Transform.h" />
     <ClInclude Include="Daddy3DEngine\src\Engine\Renderer\VertexArray.h" />
@@ -238,6 +242,7 @@
     <ClInclude Include="Daddy3DEngine\src\Engine\Scene\Scene.h" />
     <ClInclude Include="Daddy3DEngine\src\Engine\Scene\SceneManager.h" />
     <ClInclude Include="Daddy3DEngine\src\Sandbox\Scenes\SandboxScene.h" />
+    <ClInclude Include="Daddy3DEngine\vendors\Libraries\include\json\json.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Daddy3DEngine\assets\shaders\basic.glsl" />

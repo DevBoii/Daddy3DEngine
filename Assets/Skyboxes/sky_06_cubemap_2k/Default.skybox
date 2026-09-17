@@ -1,0 +1,11 @@
+{
+    "Type": "Skybox",
+    "Faces": {
+        "PositiveX": "Assets/Skyboxes/sky_06_cubemap_2k/Textures/px.png",
+        "NegativeX": "Assets/Skyboxes/sky_06_cubemap_2k/Textures/nx.png",
+        "PositiveY": "Assets/Skyboxes/sky_06_cubemap_2k/Textures/py.png",
+        "NegativeY": "Assets/Skyboxes/sky_06_cubemap_2k/Textures/ny.png",
+        "PositiveZ": "Assets/Skyboxes/sky_06_cubemap_2k/Textures/pz.png",
+        "NegativeZ": "Assets/Skyboxes/sky_06_cubemap_2k/Textures/nz.png"
+    }
+}

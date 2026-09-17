@@ -3,6 +3,7 @@
 #include "Engine/Editor/ContentBrowserPanel.h"
 #include "Engine/Editor/ConsolePanel.h"
 #include "Engine/Editor/ProfilerPanel.h"
+#include "Engine/Editor/EnvironmentPanel.h"
 
 namespace DaddyEngine
 {
@@ -26,6 +27,7 @@ namespace DaddyEngine
         DaddyEditor::EditorLayer s_EditorPanel;
         ContentBrowserPanel contentBrowserPanel;
         ConsolePanel consolePanel;
+        EnvironmentPanel environmentPanel;
 
     private:
         DaddyEngine::Application& m_App;

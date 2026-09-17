@@ -6,6 +6,9 @@
 
 namespace DaddyEngine
 {
+	//-------------------------------------------------------------------------
+	//---------------------------TEXTURE2D-------------------------------------
+	//-------------------------------------------------------------------------
 	Texture2D::Texture2D(const std::filesystem::path& path)
 		:m_FilePath(path.string())
 	{
@@ -96,5 +99,88 @@ namespace DaddyEngine
 	void Texture2D::UnBind()
 	{
 		glBindTexture(GL_TEXTURE_2D, 0);
+	}
+
+	//-------------------------------------------------------------------------
+	//---------------------------CUBEMAP---------------------------------------
+	//-------------------------------------------------------------------------
+
+	Cubemap::Cubemap(const std::vector<std::string>& faces)
+	{
+		m_RendererID = LoadCubemap(faces);
+	}
+
+	Cubemap::~Cubemap()
+	{
+		glDeleteTextures(1, &m_RendererID);
+	}
+
+	uint32_t Cubemap::LoadCubemap(const std::vector<std::string>& faces)
+	{
+		uint32_t textureID;
+		glGenTextures(1, &textureID);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+		int width, height, channels;
+		for (unsigned int i = 0; i < faces.size(); i++)
+		{
+			stbi_uc* data = stbi_load(faces[i].c_str(), &width, &height, &channels, 0);
+			GLenum internalFormat;
+			GLenum dataFormat;
+
+			if (channels == 4)
+			{
+				internalFormat = GL_RGBA8;
+				dataFormat = GL_RGBA;
+			}
+			else if (channels == 3)
+			{
+				internalFormat = GL_RGB8;
+				dataFormat = GL_RGB;
+			}
+			else if (channels == 1)
+			{
+				internalFormat = GL_R8;
+				dataFormat = GL_RED;
+			}
+			else
+			{
+				std::string warning = "[DaddyEngine] Unsupported cubemap texture format: " + faces[i];
+				ConsolePanel::InsertWarning(warning);
+				stbi_image_free(data);
+				continue;
+			}
+
+			if (data)
+			{
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, internalFormat, width, height, 0, dataFormat, GL_UNSIGNED_BYTE, data);
+				stbi_image_free(data);
+			}
+			else
+			{
+				std::string warning = "[DaddyEngine] Cubemap tex failed to load at path " + faces[i];
+				ConsolePanel::InsertWarning(warning);
+				stbi_image_free(data);
+			}
+		}
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+		return textureID;
+	}
+
+	void Cubemap::Bind(uint32_t slot)
+	{
+		glActiveTexture(GL_TEXTURE0 + slot);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_RendererID);
+	}
+
+	void Cubemap::Unbind()
+	{
+		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	}
 }

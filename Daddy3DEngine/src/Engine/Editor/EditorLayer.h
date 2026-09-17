@@ -2,6 +2,7 @@
 
 #include "SceneHierarchyPanel.h"
 #include "InspectorPanel.h"
+#include "EnvironmentPanel.h"
 #include "Engine/Scene/Scene.h"
 #include "Engine/Scene/SceneManager.h"
 #include "Engine/Core/Camera.h"
@@ -18,6 +19,7 @@ namespace DaddyEditor
 	private:
 		DaddyEngine::SceneHierarchyPanel m_SceneHierarchyPanel;
 		DaddyEngine::InspectorPanel      m_InspectorPanel;
+		DaddyEngine::EnvironmentPanel	 m_EnvironmentPanel;
 		DaddyEngine::Scene* m_ActiveScene = nullptr;
 
 	public:
@@ -29,8 +31,54 @@ namespace DaddyEditor
 
 		void OnImGuiRender()
 		{
+			if (ImGui::BeginMainMenuBar())
+			{
+				if (ImGui::BeginMenu("File"))
+				{
+					
+				}
+
+				if (ImGui::BeginMenu("Edit"))
+				{
+					
+				}
+
+				if (ImGui::BeginMenu("Assets"))
+				{
+					ImGui::MenuItem("Import");
+					ImGui::MenuItem("Create");
+					ImGui::EndMenu();
+				}
+
+				if (ImGui::BeginMenu("Window"))
+				{
+					if (ImGui::MenuItem("Environment"))
+					{
+						m_EnvironmentPanel.isOpen = true;
+					}
+					ImGui::EndMenu();
+				}
+
+				if (ImGui::BeginMenu("Help"))
+				{
+					ImGui::MenuItem("About");
+					ImGui::EndMenu();
+				}
+
+				ImGui::EndMainMenuBar();
+			}
+
 			// Fetch scene pointer through explicit engine context routing
 			m_ActiveScene = DaddyEngine::SceneManager::GetActiveScene();
+
+			if (m_ActiveScene)
+			{
+				m_EnvironmentPanel.SetEnvironment(
+					m_ActiveScene->GetEnvironment()
+				);
+
+				m_EnvironmentPanel.OnImGuiRender(m_ActiveScene);
+			}
 
 			// Render Panels
 			m_SceneHierarchyPanel.OnImGuiRender();

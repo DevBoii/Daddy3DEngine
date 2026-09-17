@@ -82,10 +82,12 @@ namespace DaddyEngine
 		// Boot up your SandboxScene level now that the OpenGL context is fully ready!
 		// ==========================================
 		DaddyEngine::AssetManager::Init();
-		SceneManager::SwitchScene(new Sandbox::SandboxScene());
 
 		Renderer renderer;
+		renderer.Init();
 		float m_LastFrameTime = 0.0f;
+
+		SceneManager::SwitchScene(new Sandbox::SandboxScene());
 
 		ImGuiLayer imguiLayer;
 		imguiLayer.OnAttach();
@@ -102,14 +104,10 @@ namespace DaddyEngine
 			m_LastFrameTime = time;
 			m_EditorCamera->DebugCameraController(ts);
 
+
 			// Bind Framebuffer: Everything rendered now goes to a texture, not the screen
 			m_Framebuffer->Bind();
 			glViewport(0, 0, m_Framebuffer->width, m_Framebuffer->height);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			renderer.Clear();
-
-			// Begin the camera pass context
-			renderer.BeginScene(*m_EditorCamera, m_WireframeMode);
 
 			// ==========================================
 			// [SCENE RUNTIME RENDERING]
@@ -120,10 +118,15 @@ namespace DaddyEngine
 			Scene* activeScene = SceneManager::GetActiveScene();
 			if (activeScene)
 			{
+				// Clear scene using environment color
+				renderer.Clear(activeScene->GetEnvironment().SkyColor);
+				// Begin the camera pass context
+				renderer.BeginScene(*m_EditorCamera, m_WireframeMode);
+				// Update + submit scene objects
 				activeScene->OnUpdate(ts, *GetEditorCamera());
+				renderer.EndScene();
 			}
 
-			renderer.EndScene();
 			if(DaddyEngine::GizmoSettings::drawGizmos)
 				DaddyEngine::DebugRenderer::Flush(m_EditorCamera->GetViewProjection());
 
@@ -146,6 +149,7 @@ namespace DaddyEngine
 			glfwPollEvents();
 		}
 		imguiLayer.OnDetach();
+		renderer.Shutdown();
 		DaddyEngine::AssetManager::Shutdown();
 	}
 

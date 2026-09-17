@@ -10,6 +10,19 @@
 
 namespace DaddyEngine
 {
+	enum class SkyType
+	{
+		SolidColor,
+		Skybox
+	};
+
+	struct Environment
+	{
+		SkyType SkyType = SkyType::Skybox;
+		std::string SkyboxPath;
+		glm::vec3 SkyColor{ 0.0f, 0.0f, 0.0f };
+	};
+
 	class Scene
 	{
 	private:
@@ -17,6 +30,8 @@ namespace DaddyEngine
 		std::string m_SceneName;
 		Shader m_BasicShader;
 		
+		Environment m_Environment;
+
 		void CreateDirectionalLightEntity();
 
 	public:
@@ -45,5 +60,10 @@ namespace DaddyEngine
 		void OnRender(Camera& camera); // Keep this non-virtual if rendering is the same for all scenes
 
 		Registry& GetRegistry() { return m_Registry; }
+
+		void SetSkybox(const std::string& path);
+
+		Environment& GetEnvironment() { return m_Environment; }
+		const Environment& GetEnvironment() const { return m_Environment; }
 	};
 }

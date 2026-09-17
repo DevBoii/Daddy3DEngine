@@ -37,6 +37,8 @@ namespace DaddyEngine
 		view = glm::lookAt(cameraPos, cameraPos + camForward, camUp);
 		proj = glm::perspective(glm::radians(m_FOV), (float)m_Width / (float)m_Height, m_nearPlane, m_farPlane);
 
+        m_ViewMatrix = view;
+        m_ProjectionMatrix = proj;
 		m_ViewProjection = proj * view;
 	}
 

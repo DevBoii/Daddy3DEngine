@@ -8,6 +8,7 @@ namespace DaddyEngine
 	glm::mat4 Renderer::s_ViewProjection = glm::mat4(1.0f);
 	uint32_t Renderer::s_TriangleCount = 0;
 	uint32_t Renderer::s_DrawCalls = 0;
+	std::unique_ptr<SkyboxRenderer> Renderer::s_SkyboxRenderer = nullptr;
 
 	uint32_t Renderer::GetTriangleCount()
 	{
@@ -28,11 +29,25 @@ namespace DaddyEngine
 
 	}
 
+	void Renderer::Init()
+	{
+		s_SkyboxRenderer = std::make_unique<SkyboxRenderer>();
+	}
+
+	void Renderer::Shutdown()
+	{
+		s_SkyboxRenderer.reset();
+	}
+
 	void Renderer::Clear()
 	{
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);	// greyish
-		//glClearColor(0.5f, 0.0f, 0.0f, 1.0f);	// Red
-		//glClearColor(0.0f, 0.0f, 0.0f, 1.0f);	// Black
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+
+	void Renderer::Clear(const glm::vec3& clearColor)
+	{
+		glClearColor(clearColor.r, clearColor.g, clearColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
@@ -60,6 +75,32 @@ namespace DaddyEngine
 			{
 				Submit(*meshPtr, material, shader, modelMat4);
 			}
+		}
+	}
+
+	void Renderer::RenderSkybox(Camera& camera)
+	{
+		if (s_SkyboxRenderer)
+		{
+			s_SkyboxRenderer->RenderSkyBox(camera);
+		}
+	}
+
+	void Renderer::SetSkybox(const std::string& path)
+	{
+		if (!s_SkyboxRenderer)
+			return;
+
+		auto skybox = std::make_shared<Skybox>(path);
+
+		s_SkyboxRenderer->SetSkybox(skybox);
+	}
+
+	void Renderer:: RemoveSkybox()
+	{
+		if (s_SkyboxRenderer)
+		{
+			s_SkyboxRenderer->RemoveSkybox();
 		}
 	}
 

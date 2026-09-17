@@ -28,4 +28,23 @@ namespace DaddyEngine
 		uint32_t GetWidth() const { return m_Width; }
 		uint32_t GetChannel() const { return m_Channels; }
 	};
+
+	class Cubemap
+	{
+	public:
+
+		Cubemap(const std::vector<std::string>& faces);
+		~Cubemap();
+
+
+		uint32_t LoadCubemap(const std::vector<std::string>& faces);
+		void Bind(uint32_t slot);
+		void Unbind();
+
+		uint32_t GetRendererID() const { return m_RendererID; }
+
+	private:
+
+		uint32_t m_RendererID;
+	};
 }

@@ -42,6 +42,7 @@ namespace DaddyEngine
 	public:
 		int GetUniformLocation(const std::string& name);
 		inline unsigned int GetShaderID() { return m_RendererID; }
+		void SetInt(const std::string& name, int value);
 		void SetUniform1f(const std::string& name, float value);
 		void SetUniform3f(const std::string& name, float v0, float v1, float v2);
 		void SetUniformVec3(const std::string& name, const glm::vec3 vec);

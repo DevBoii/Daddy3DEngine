@@ -73,9 +73,8 @@ namespace DaddyEngine
         ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode;
         ImGui::DockSpaceOverViewport(0, ImGui::GetMainViewport(), dockspace_flags);
 
-        //MainWindow();
-        SceneWindow();
         s_EditorPanel.OnImGuiRender();
+        SceneWindow();
         contentBrowserPanel.OnImGuiRender();
         consolePanel.OnImGuiRender();
         ProfilerPanel::OnImGuiRender(ts);
@@ -167,17 +166,5 @@ namespace DaddyEngine
 
         ImGui::End();
         ImGui::PopStyleVar();
-    }
-
-    void ImGuiLayer::MainWindow()
-    {
-        if (ImGui::BeginMenuBar())
-        {
-            if (ImGui::BeginMenu("File"))
-            {
-                ImGui::EndMenu();
-            }
-            ImGui::EndMenuBar();
-        }
     }
 }

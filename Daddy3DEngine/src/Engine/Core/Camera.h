@@ -18,6 +18,8 @@ namespace DaddyEngine
 		glm::vec3 camForward = glm::vec3(0.0f);
 
 		glm::mat4 m_ViewProjection;
+		glm::mat4 m_ViewMatrix;
+		glm::mat4 m_ProjectionMatrix;
 		int m_Width = 0;
 		int m_Height = 0;
 
@@ -34,6 +36,8 @@ namespace DaddyEngine
 		void CalculateVP();
 		void SetViewportSize(int width, int height);
 		glm::mat4 GetViewProjection() const;
+		glm::mat4 GetViewMatrix() const { return m_ViewMatrix; }
+		glm::mat4 GetProjectionMatrix() const { return m_ProjectionMatrix; }
 
 		void DebugCameraController(Timestep ts);
 

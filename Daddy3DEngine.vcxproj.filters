@@ -120,6 +120,12 @@
     <ClCompile Include="Daddy3DEngine\src\Engine\Editor\ConsolePanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Daddy3DEngine\src\Engine\Renderer\Skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Daddy3DEngine\src\Engine\Editor\EnvironmentPanel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Daddy3DEngine\src\Engine\Core\Application.h">
@@ -225,6 +231,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Daddy3DEngine\src\Engine\Editor\ProfilerPanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Daddy3DEngine\src\Engine\Renderer\Skybox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Daddy3DEngine\src\Engine\Editor\EnvironmentPanel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Daddy3DEngine\vendors\Libraries\include\json\json.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -70,6 +70,11 @@ namespace DaddyEngine
 				}
 			}
 		}
+
+		//-----------Render Skybox
+		if (m_Environment.SkyType == SkyType::Skybox)
+			Renderer::RenderSkybox(camera);
+
 		if (DaddyEngine::GizmoSettings::debugGrid)
 			DaddyEngine::DebugRenderer::DrawGrid();
 		if (DaddyEngine::GizmoSettings::debugWorldAxis)
@@ -79,6 +84,8 @@ namespace DaddyEngine
 	void Scene::OnCreate()
 	{
 		CreateDirectionalLightEntity();
+		
+		SetSkybox("Assets/Skyboxes/sky_06_cubemap_2k/Default.skybox");
 	}
 
 	void Scene::OnUpdate(Timestep s, Camera& camera)
@@ -312,6 +319,12 @@ namespace DaddyEngine
 		auto& transform = m_Registry.GetComponent<Transform>(directionalLight);
 		transform.Position = glm::vec3(2.0f, 2.0f, 2.0f);
 		transform.Rotation = glm::vec3(45.0f, -45.0f, 0.0f);
+	}
+
+	void Scene::SetSkybox(const std::string& path)
+	{
+		m_Environment.SkyboxPath = path;
+		Renderer::SetSkybox(path);
 	}
 
 	void Scene::DestroyEntity(uint32_t entity)

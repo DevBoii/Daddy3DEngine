@@ -99,6 +99,18 @@ namespace DaddyEngine
 							ImGui::EndDragDropSource();
 						}
 					}
+
+					//For Skyboxes
+					if (extension == ".skybox")
+					{
+						if (ImGui::BeginDragDropSource())
+						{
+							std::string relativePath = path.string();
+							ImGui::SetDragDropPayload("SKYBOX_PATH", relativePath.c_str(), (relativePath.size() + 1) * sizeof(char));
+							ImGui::Text("Assign Skybox: %s", fileName.c_str());
+							ImGui::EndDragDropSource();
+						}
+					}
 				}
 				ImGui::TextWrapped("%s", fileName.c_str());
 				ImGui::NextColumn();

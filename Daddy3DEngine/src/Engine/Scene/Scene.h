@@ -7,22 +7,10 @@
 #include "Engine/Renderer/Shader.h"
 #include "Engine/Core/Camera.h"
 #include "Engine/Renderer/Model.h"
+#include "Engine/Scene/Environment/Environment.h"
 
 namespace DaddyEngine
 {
-	enum class SkyType
-	{
-		SolidColor,
-		Skybox
-	};
-
-	struct Environment
-	{
-		SkyType SkyType = SkyType::Skybox;
-		std::string SkyboxPath;
-		glm::vec3 SkyColor{ 0.0f, 0.0f, 0.0f };
-	};
-
 	class Scene
 	{
 	private:
@@ -36,7 +24,7 @@ namespace DaddyEngine
 
 	public:
 
-		Scene(const std::string& sceneName = "default") : m_SceneName(sceneName), m_BasicShader("F:\\C++Codes\\OpenGL\\Daddy3DEngine\\Daddy3DEngine\\assets\\shaders\\basic.glsl")
+		Scene(const std::string& sceneName = "default") : m_SceneName(sceneName), m_BasicShader("Daddy3DEngine/assets/shaders/basic.glsl")
 		{
 		}
 		virtual ~Scene() = default; // Crucial for virtual classes!

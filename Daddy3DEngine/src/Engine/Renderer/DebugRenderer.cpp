@@ -48,7 +48,7 @@ namespace DaddyEngine
 		// Upload Vertex Data
 			// Allocate a Dynamic Buffer (e.g. Max 2000 lines = 4000 vertices)
 			// GL_DYNAMIC_DRAW optimization for frequent CPU -> GPU updates
-		const size_t maxVertices = 4000;
+		const size_t maxVertices = 8000;
 		glBufferData(GL_ARRAY_BUFFER, maxVertices * sizeof(LineVertex), nullptr, GL_DYNAMIC_DRAW);
 
 		// Location 0: Position (vec3)

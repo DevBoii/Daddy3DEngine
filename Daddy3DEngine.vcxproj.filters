@@ -126,6 +126,12 @@
     <ClCompile Include="Daddy3DEngine\src\Engine\Editor\EnvironmentPanel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Daddy3DEngine\src\Engine\Scene\Terrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Daddy3DEngine\src\Engine\Physics\Raycast.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Daddy3DEngine\src\Engine\Core\Application.h">
@@ -240,6 +246,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Daddy3DEngine\vendors\Libraries\include\json\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Daddy3DEngine\src\Engine\Scene\Environment\Environment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Daddy3DEngine\src\Engine\Scene\Terrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Daddy3DEngine\src\Engine\Physics\Raycast.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

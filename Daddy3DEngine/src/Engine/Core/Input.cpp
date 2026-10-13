@@ -45,6 +45,11 @@ namespace DaddyEngine
 		return yPos;
 	}
 
+	glm::vec3 GetMouseWorldPos()
+	{
+		return glm::vec3(0);
+	}
+
 	GLFWwindow* Input::GetWindow()
 	{
 		return DaddyEngine::Application::Get().GetWindow();

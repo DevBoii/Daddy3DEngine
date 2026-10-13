@@ -66,6 +66,11 @@ namespace DaddyEngine
 		s_CommandQueue.push_back({ &mesh, &shader, modelMat4, material });
 	}
 
+	void Renderer::SubmitTerrain(Mesh& mesh, std::shared_ptr<Material> material, Shader& shader, const glm::mat4& modelMat4)
+	{
+		s_CommandQueue.push_back({ &mesh, &shader, modelMat4, material });
+	}
+
 	void Renderer::Submit(Model& model, std::shared_ptr<Material> material, Shader& shader, const glm::mat4& modelMat4)
 	{
 		// model.GetMeshes() returns std::vector<std::shared_ptr<Mesh>>
@@ -78,11 +83,11 @@ namespace DaddyEngine
 		}
 	}
 
-	void Renderer::RenderSkybox(Camera& camera)
+	void Renderer::RenderSkybox(Camera& camera, Environment& environment)
 	{
 		if (s_SkyboxRenderer)
 		{
-			s_SkyboxRenderer->RenderSkyBox(camera);
+			s_SkyboxRenderer->RenderSkyBox(camera, environment);
 		}
 	}
 

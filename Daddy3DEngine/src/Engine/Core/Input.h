@@ -1,6 +1,7 @@
 #pragma once
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 namespace DaddyEngine
 {
@@ -17,6 +18,7 @@ namespace DaddyEngine
 		static double GetMouseY();
 		static void EnableCursor();
 		static void DisableCursor();
+		static glm::vec3 GetMouseWorldPos();
 	private:
 		static GLFWwindow* GetWindow();
 	};

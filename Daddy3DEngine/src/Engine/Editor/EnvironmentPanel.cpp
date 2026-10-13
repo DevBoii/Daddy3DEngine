@@ -26,6 +26,14 @@ namespace DaddyEngine
             "Skybox",
         };
 
+        ImVec2 windowSize = ImGui::GetWindowSize();
+
+        const char* skyboxText = "-Skybox-";
+        float skyboxTextWidth = ImGui::CalcTextSize(skyboxText).x;
+        ImGui::SetCursorPosX((windowSize.x - skyboxTextWidth) / 2.0f);
+        ImGui::TextDisabled("%s", skyboxText);
+        ImGui::Separator();
+
         int current = static_cast<int>(m_Environment->SkyType);
         ImGui::Text("SkyType");
         ImGui::SameLine();
@@ -45,6 +53,15 @@ namespace DaddyEngine
         default:
             break;
         }
+
+        ImGui::Separator();
+        const char* fogText = "-Fog-";
+        float fogTextWidth = ImGui::CalcTextSize(fogText).x;
+        ImGui::SetCursorPosX((windowSize.x - fogTextWidth) / 2.0f);
+        ImGui::TextDisabled("%s", fogText);
+        ImGui::Separator();
+
+        FogPanel();
 
         ImGui::End();
     }
@@ -84,5 +101,31 @@ namespace DaddyEngine
             }
             ImGui::EndDragDropTarget();
         }
+    }
+
+    void EnvironmentPanel::FogPanel()
+    {
+        ImGui::Text("UseFog: ");
+        ImGui::SameLine();
+        ImGui::Checkbox("##UseFog: ", &m_Environment->m_FogSettings.useFog);
+        ImGui::Text("Fog Color: ");
+        ImGui::SameLine();
+        ImGui::ColorEdit3("##Fog Color", &m_Environment->m_FogSettings.fogColor.x, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_Float);
+        ImGui::Text("Fog Density: ");
+        ImGui::SameLine();
+        ImGui::SliderFloat("##Fog Density", &m_Environment->m_FogSettings.fogDensity, 0.0f, 1.0f);
+        ImGui::Separator();
+        ImGui::Separator();
+        ImGui::Text("UseSkyFog: ");
+        ImGui::SameLine();
+        ImGui::Checkbox("##UseSkyFog: ", &m_Environment->m_FogSettings.useSkyFog);
+        ImGui::Text("Fog Sky Color: ");
+        ImGui::SameLine();
+        ImGui::ColorEdit3("##Fog Sky Color", &m_Environment->m_FogSettings.skyFogColor.x, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_Float);
+        ImGui::SameLine();
+        ImGui::Checkbox("##UseSameFogColor: ", &m_Environment->m_FogSettings.useSameColor);
+        ImGui::Text("Sky Fog Intensity: ");
+        ImGui::SameLine();
+        ImGui::SliderFloat("##Sky Fog Intensity", &m_Environment->m_FogSettings.skyFogIntensity, 0.0f, 1.0f);
     }
 }

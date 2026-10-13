@@ -187,15 +187,23 @@ namespace DaddyEngine
         unsigned int m_IndexCount;
         // Material pointer owned by this specific mesh instance
         std::shared_ptr<Material> m_Material = nullptr;
+
+        // CPU-side mirror for real-time sculpting/deformation
+        std::vector<Vertex> m_CPUVertices;
 	public:
         Mesh() = default;
-        Mesh(const MeshData& data);
+        Mesh(const MeshData& data, bool isStaticMesh = true);
 
         // Material Getter & Setter
         void SetMaterial(const std::shared_ptr<Material>& material) { m_Material = material; }
         std::shared_ptr<Material> GetMaterial() const { return m_Material; }
+        
+        // Dynamic deformation updates
+        void UpdateVertices(const std::vector<Vertex>& vertices);
+        std::vector<Vertex>& GetVertices() { return m_CPUVertices; }
 
 		void Bind();
         inline unsigned int GetIndexCount() { return m_IndexCount; }
+        bool m_IsStatic = true;
 	};
 }

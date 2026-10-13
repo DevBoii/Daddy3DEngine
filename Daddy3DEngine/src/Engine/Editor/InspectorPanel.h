@@ -8,10 +8,13 @@
 #include "Engine/Scene/Components/IdentityComponent.h"
 #include "Engine/Scene/Components/MeshRenderer.h"
 #include "Engine/Scene/Components/LightComponent.h"
+#include "Engine/Scene/Terrain.h"
 #include "Engine/Renderer/Mesh.h"
 #include "Engine/Renderer/Transform.h"
 #include "Engine/Core/Assets/AssetManager.h"
+#include "Engine/Renderer/DebugRenderer.h"
 
+#include <limits>
 namespace DaddyEngine
 {
 	class InspectorPanel
@@ -67,6 +70,10 @@ namespace DaddyEngine
 					else if constexpr (std::is_same_v <T, LightComponent>)
 					{
 						LightComponentPanel(component);
+					}
+					else if constexpr (std::is_same_v <T, Terrain>)
+					{
+						TerrainPanel(component);
 					}
 
 					ImGui::TreePop();
@@ -237,7 +244,74 @@ namespace DaddyEngine
 			}
 		}
 
-		using ComponentList = std::tuple<Transform, MeshRenderer, LightComponent>;
+		void TerrainPanel(Terrain& component)
+		{
+			uint16_t minValue = 2;
+			uint16_t maxValue = 1000;
+			ImGui::Text("Tools");
+
+			ImGui::Text("Terrain Brush");
+			ImGui::Separator();
+
+			const char* modes[] =
+			{
+				"None",
+				"Smooth Raise",
+				"Hard Raise",
+				"Smooth Lower",
+				"Hard Lower"
+			};
+
+			int currentMode = static_cast<int>(component.brush.mode);
+
+			if (ImGui::Combo("Mode", &currentMode, modes, IM_ARRAYSIZE(modes)))
+			{
+				component.brush.mode = static_cast<Brush::Mode>(currentMode);
+			}
+			ImGui::Checkbox("Normals", &component.drawNormals);
+			if (component.drawNormals)
+			{
+				component.DrawNormals();
+			}
+			if (!currentMode == 0)
+			{
+				ImGui::DragFloat("Radius", &component.brush.radius, 0.1f, 0.1f, 100.0f);
+
+				ImGui::DragFloat("Intensity", &component.brush.intensity, 0.01f, 0.001f, 10.0f);
+
+				ImGui::Text("For Debug");
+				
+				DaddyEngine::DebugRenderer::DrawLine(component.brush.position, component.brush.position + glm::vec3(0, -1, 0), glm::vec3(0.1f, 0.4f, 0.7f));
+				ImGui::DragFloat3("Brush Position", &component.brush.position.x, 0.1f);
+				if (ImGui::Button("ApplyBrush", ImVec2(80, 20)))
+				{
+					component.ApplyBrush();
+				}
+			}
+
+			ImGui::Separator();
+
+			ImGui::Text("Width: ");
+			ImGui::SameLine();
+			if (ImGui::DragInt("##Width", &component.width, 1.0f, minValue, maxValue))
+			{
+				component.GenerateTerrain();
+			}
+			ImGui::Text("Height: ");
+			ImGui::SameLine();
+			if(ImGui::DragInt("##Height", &component.height, 1.0f, minValue, maxValue))
+			{
+				component.GenerateTerrain();
+			}
+			ImGui::Text("Spacing: ");
+			ImGui::SameLine();
+			if(ImGui::DragFloat("##Spacing", &component.spacing, 0.1f, 0.1f, 10.0f))
+			{
+				component.GenerateTerrain();
+			}
+		}
+
+		using ComponentList = std::tuple<Transform, MeshRenderer, LightComponent, Terrain>;
 
 	public:
 		InspectorPanel() = default;

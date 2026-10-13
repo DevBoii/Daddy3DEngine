@@ -9,6 +9,7 @@
 #include "Engine/Scene/Components/RelationshipComponent.h"
 #include "Engine/Scene/Components/MeshRenderer.h"
 #include "Engine/Scene/Components/LightComponent.h"
+#include "Engine/Scene/Terrain.h"
 #include "Engine/Renderer/DebugRenderer.h"
 #include "Engine/Editor/GizmoSettings.h"
 #include <glm/gtx/matrix_decompose.hpp>
@@ -39,19 +40,25 @@ namespace DaddyEngine
 				break; // found first light source
 			}
 		}
+		//------------------------Light-------------------------------------
 		m_BasicShader.Bind();
-		m_BasicShader.SetUniformVec3("u_LightColor", finalLightColor);
-		m_BasicShader.SetUniformVec3("u_LightDirection", lightDirection);
-		m_BasicShader.SetUniform1f("u_AmbientStrength", ambientStrength);
-		m_BasicShader.SetUniform1f("u_Intensity", intensity);
+		m_BasicShader.SetUniformVec3("u_Light.u_LightColor", finalLightColor);
+		m_BasicShader.SetUniformVec3("u_Light.u_LightDirection", lightDirection);
+		m_BasicShader.SetUniform1f("u_Light.u_AmbientStrength", ambientStrength);
+		m_BasicShader.SetUniform1f("u_Light.u_Intensity", intensity);
+		//------------------------Fog---------------------------------------
+		m_BasicShader.SetUniformVec3("u_CameraPosition", camera.GetPosition());
+		m_BasicShader.SetUniform1i("u_Fog.useFog", m_Environment.m_FogSettings.useFog);
+		m_BasicShader.SetUniformVec3("u_Fog.fogColor", m_Environment.m_FogSettings.fogColor);
+		m_BasicShader.SetUniform1f("u_Fog.fogDensity", m_Environment.m_FogSettings.fogDensity);
 
 		auto renderView = m_Registry.GetView<Transform>();
 
 		for (uint32_t entity : renderView)
 		{
+			auto& transformComponent = m_Registry.GetComponent<Transform>(entity);
 			if (m_Registry.HasComponent<MeshRenderer>(entity))
 			{
-				auto& transformComponent = m_Registry.GetComponent<Transform>(entity);
 				auto& meshRenderer = m_Registry.GetComponent<MeshRenderer>(entity);
 
 				// Visibility check
@@ -69,11 +76,17 @@ namespace DaddyEngine
 					Renderer::Submit(*meshRenderer.ModelAsset, meshRenderer.MaterialAsset, m_BasicShader, transformComponent.GetTransform());
 				}
 			}
+
+			if (m_Registry.HasComponent<Terrain>(entity))
+			{
+				auto& terrainComponent = m_Registry.GetComponent<Terrain>(entity);
+				Renderer::SubmitTerrain(*terrainComponent.GetMesh(), terrainComponent.GetMesh()->GetMaterial(), m_BasicShader, transformComponent.GetTransform());
+			}
 		}
 
 		//-----------Render Skybox
 		if (m_Environment.SkyType == SkyType::Skybox)
-			Renderer::RenderSkybox(camera);
+			Renderer::RenderSkybox(camera, m_Environment);
 
 		if (DaddyEngine::GizmoSettings::debugGrid)
 			DaddyEngine::DebugRenderer::DrawGrid();
@@ -85,7 +98,7 @@ namespace DaddyEngine
 	{
 		CreateDirectionalLightEntity();
 		
-		SetSkybox("Assets/Skyboxes/sky_06_cubemap_2k/Default.skybox");
+		SetSkybox("Assets/Skyboxes/sky_40_cubemap_2k/Default2.skybox");
 	}
 
 	void Scene::OnUpdate(Timestep s, Camera& camera)

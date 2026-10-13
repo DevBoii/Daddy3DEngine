@@ -20,6 +20,7 @@ namespace DaddyEngine
 
         bool IsVisible = true;
         bool CastShadow = true;
+        bool deformable = false;
 
         MeshRenderer() = default;
 

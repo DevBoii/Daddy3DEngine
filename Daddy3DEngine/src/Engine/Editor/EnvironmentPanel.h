@@ -21,6 +21,7 @@ namespace DaddyEngine
     private:
         void SolidColorPanel();
         void SkyboxPanel(Scene* scene);
+        void FogPanel();
 
         Environment* m_Environment = nullptr;
     };

@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Engine/Core/Camera.h"
+#include "Engine/Scene/Environment/Environment.h"
 
 namespace DaddyEngine
 {
@@ -34,7 +35,7 @@ namespace DaddyEngine
         void RemoveSkybox();
         std::shared_ptr<Skybox> GetSkybox() { return m_Skybox; }
 
-		void RenderSkyBox(Camera& camera);
+		void RenderSkyBox(Camera& camera, Environment& environment);
 
 	private:
 

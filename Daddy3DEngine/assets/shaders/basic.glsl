@@ -27,6 +27,8 @@ void main()
 	gl_Position = u_ViewProjection * worldPos;
 }
 
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 #shader fragment
 #version 330 core
 
@@ -36,6 +38,8 @@ in vec3 vFragPos;
 in vec2 vTexCoords;
 
 out vec4 FragColor;
+
+uniform vec3 u_CameraPosition;
 
 // Material Uniforms (Matches Material::Bind)
 struct Material 
@@ -51,17 +55,34 @@ struct Material
 	float SpecularIntensity;
 	float Shininess;
 };
-
 uniform Material u_Material;
 
-uniform vec3 u_LightColor;
-uniform float u_AmbientStrength;
-uniform float u_Intensity;
+//Light Uniforms
+struct Light
+{
+	vec3 u_LightColor;
+	float u_AmbientStrength;
+	float u_Intensity;
+	vec3 u_LightDirection;
+};
+uniform Light u_Light;
 
-uniform vec3 u_LightDirection;
+struct Fog
+{
+	bool useFog;
+	vec3 fogColor;
+	float fogDensity;
+};
+uniform Fog u_Fog;
 
 void main()
 {
+
+	vec3 finalColor;
+
+	//-------------------------------------------------------------------------------------------------
+	//------------------------------------------Material--------------------------------------------------
+	//-------------------------------------------------------------------------------------------------
 	vec3 albedo;
 	if(u_Material.UseAlbedoMap == 1)
 	{
@@ -71,15 +92,36 @@ void main()
 		albedo = vColor * u_Material.AlbedoColor;
 	}
 
+	//-------------------------------------------------------------------------------------------------
+	//------------------------------------------Light--------------------------------------------------
+	//-------------------------------------------------------------------------------------------------
+
 	//  Ambient Calculation (Base background light)
-	vec3 ambient = u_AmbientStrength * u_LightColor;
+	vec3 ambient = u_Light.u_AmbientStrength * u_Light.u_LightColor;
 
 	// Diffuse
 	vec3 normal = normalize(vNormal);
-	vec3 lightDirection = normalize(-u_LightDirection);
+	vec3 lightDirection = normalize(-u_Light.u_LightDirection);
 	float diffFactor = max(dot(normal, lightDirection), 0.0);
-	vec3 diffuse = u_LightColor * diffFactor * u_Intensity;
+	vec3 diffuse = u_Light.u_LightColor * diffFactor * u_Light.u_Intensity;
+	vec3 finalLightResult = (ambient + diffuse) * albedo;
 
-	vec3 finalResult = (ambient + diffuse) * albedo;
-	FragColor = vec4(finalResult, 1.0f);
+	//-------------------------------------------------------------------------------------------------
+	//------------------------------------------Fog--------------------------------------------------
+	//-------------------------------------------------------------------------------------------------
+	float distance = length(vFragPos - u_CameraPosition);
+	float fogFactor = exp(-u_Fog.fogDensity * distance);
+	float clampedFogFactor = clamp(fogFactor, 0.0f, 1.0f);
+	vec3 finalColorWithFog = mix(u_Fog.fogColor, finalLightResult, clampedFogFactor);
+
+	if(u_Fog.useFog)
+	{
+		finalColor = finalColorWithFog;
+	}
+	else
+	{
+		finalColor = finalLightResult;
+	}
+
+	FragColor = vec4(finalColor, 1.0f);
 }

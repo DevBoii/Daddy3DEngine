@@ -77,9 +77,30 @@ namespace DaddyEngine
 
 			uniform samplerCube skybox;
 
+			uniform bool useSkyFog;
+			uniform vec3 skyFogColor;
+			uniform float skyFogIntensity;
+
 			void main()
 			{
-				FragColor = texture(skybox, TexCoords);
+				vec3 finalColor;
+				vec3 skyColor = texture(skybox, TexCoords).rgb;
+				
+				if(useSkyFog)
+				{
+					vec3 direction = normalize(TexCoords);
+					float horizon = 1.0 - direction.y;
+					float fogAmount = horizon * skyFogIntensity;
+					fogAmount = clamp(fogAmount, 0.0, 1.0);
+					finalColor = mix(skyColor, skyFogColor, fogAmount);
+					
+				}
+				else
+				{
+					finalColor = skyColor;
+				}
+				
+				FragColor = vec4(finalColor, 1.0f);
 			}
 		
 		)";
@@ -118,7 +139,7 @@ namespace DaddyEngine
 		m_Skybox = nullptr;
 	}
 
-	void SkyboxRenderer::RenderSkyBox(Camera& camera)
+	void SkyboxRenderer::RenderSkyBox(Camera& camera, Environment& environment)
 	{
 		if (!m_Skybox) return;
 
@@ -138,5 +159,14 @@ namespace DaddyEngine
 		glBindVertexArray(0);
 
 		glDepthMask(GL_TRUE);
+		glm::vec3 fogColor = environment.m_FogSettings.skyFogColor;
+		if (environment.m_FogSettings.useSameColor)
+		{
+			fogColor = environment.m_FogSettings.fogColor;
+			environment.m_FogSettings.skyFogColor = environment.m_FogSettings.fogColor;
+		}
+		m_SkyboxShader->SetUniform1i("useSkyFog", environment.m_FogSettings.useSkyFog);
+		m_SkyboxShader->SetUniformVec3("skyFogColor", fogColor);
+		m_SkyboxShader->SetUniform1f("skyFogIntensity", environment.m_FogSettings.skyFogIntensity);
 	}
 }

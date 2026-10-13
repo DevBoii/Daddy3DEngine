@@ -32,13 +32,14 @@ namespace DaddyEngine
 		void Shutdown();
 		void BeginScene(Camera& camera, bool& wireframe);
 		static void Submit(Mesh& mesh, std::shared_ptr<Material> material, Shader& shader, const glm::mat4& modelMat4);
+		static void SubmitTerrain(Mesh& mesh, std::shared_ptr<Material> material, Shader& shader, const glm::mat4& modelMat4);
 		static void Submit(Model& model, std::shared_ptr<Material> material, Shader& shader, const glm::mat4& modelMat4);
 		void EndScene();
 		void Clear(const glm::vec3& clearColor);
 		void Clear();
 
 		// Skybox Management
-		static void RenderSkybox(Camera& camera);
+		static void RenderSkybox(Camera& camera, Environment& environment);
 		static void SetSkybox(const std::string& path);
 		static void RemoveSkybox();
 

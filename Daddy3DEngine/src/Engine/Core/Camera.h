@@ -38,6 +38,7 @@ namespace DaddyEngine
 		glm::mat4 GetViewProjection() const;
 		glm::mat4 GetViewMatrix() const { return m_ViewMatrix; }
 		glm::mat4 GetProjectionMatrix() const { return m_ProjectionMatrix; }
+		const glm::vec3 GetPosition() const { return cameraPos; }
 
 		void DebugCameraController(Timestep ts);
 

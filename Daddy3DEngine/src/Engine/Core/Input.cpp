@@ -1,5 +1,6 @@
-#include "Input.h"
+﻿#include "Input.h"
 #include "Application.h"
+#include "Camera.h"
 
 namespace DaddyEngine
 {
@@ -45,9 +46,14 @@ namespace DaddyEngine
 		return yPos;
 	}
 
-	glm::vec3 GetMouseWorldPos()
+	glm::vec3 Input::MousePosition()
 	{
-		return glm::vec3(0);
+		//1. Get Mouse Screen Pos then convert it into NDC(Normalized Device Coordinates) - -1 to 1
+
+		double mouseX, mouseY;
+		glfwGetCursorPos(GetWindow(), &mouseX, &mouseY);
+
+		return glm::vec3(mouseX, mouseY, 0);
 	}
 
 	GLFWwindow* Input::GetWindow()

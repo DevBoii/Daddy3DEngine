@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include "KeyCodes.h"
 
 namespace DaddyEngine
 {
@@ -18,7 +19,7 @@ namespace DaddyEngine
 		static double GetMouseY();
 		static void EnableCursor();
 		static void DisableCursor();
-		static glm::vec3 GetMouseWorldPos();
+		static glm::vec3 MousePosition();
 	private:
 		static GLFWwindow* GetWindow();
 	};

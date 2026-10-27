@@ -15,6 +15,13 @@
 namespace DaddyEngine
 {
     bool ImGuiLayer::g_SceneWindowHovered = false;
+
+    glm::vec2 ImGuiLayer::g_SceneViewportPosition(0.0f);
+    glm::vec2 ImGuiLayer::g_SceneViewportSize(0.0f);
+    glm::vec2 ImGuiLayer::g_SceneMousePosition(0.0f);
+
+    bool ImGuiLayer::g_MouseInsideScene = false;
+
     ImGuiLayer::ImGuiLayer()
         : m_App(Application::Get())
     {
@@ -150,6 +157,7 @@ namespace DaddyEngine
         g_SceneWindowHovered = ImGui::IsWindowHovered();
         // Get the size of specific ImGui window
         ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+        ImVec2 imageMin = ImGui::GetCursorScreenPos();
 
         Framebuffer* fb = m_App.GetFramebuffer();
 
@@ -163,6 +171,19 @@ namespace DaddyEngine
         //Draw the texture (flipped because OpenGL is bottom-up)
         uint32_t textureID = fb->m_texture;
         ImGui::Image((void*)(uintptr_t)textureID, viewportPanelSize, ImVec2(0, 1), ImVec2(1, 0));
+
+        // Read mouse position in screen coordinates
+        ImVec2 mouse = ImGui::GetMousePos();
+
+        // Store viewport information for terrain editing
+        g_SceneViewportPosition = glm::vec2(imageMin.x, imageMin.y);
+        g_SceneViewportSize = glm::vec2(viewportPanelSize.x, viewportPanelSize.y);
+
+        // Convert screen coordinates to image-relative coordinates
+        g_SceneMousePosition = glm::vec2(mouse.x - imageMin.x, mouse.y - imageMin.y);
+
+        // Check whether the mouse is inside the image
+        g_MouseInsideScene = mouse.x >= imageMin.x && mouse.y >= imageMin.y && mouse.x < imageMin.x + viewportPanelSize.x && mouse.y < imageMin.y + viewportPanelSize.y;
 
         ImGui::End();
         ImGui::PopStyleVar();

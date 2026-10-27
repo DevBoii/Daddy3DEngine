@@ -1,4 +1,4 @@
-#include "Camera.h"
+﻿#include "Camera.h"
 #include "Input.h"
 #include "KeyCodes.h"
 #include "Engine/Core/ImGui/ImGuiLayer.h"
@@ -116,5 +116,42 @@ namespace DaddyEngine
                 DaddyEngine::Input::EnableCursor();
             }
         }
+    }
+
+    glm::vec3 Camera::ScreenToWorldPoint(const glm::vec3& mouseScreenPosition)
+    {
+        // Screen space -> NDC
+        const float width = static_cast<float>(m_Width);
+        const float height = static_cast<float>(m_Height);
+
+        const float x = 2.0f * mouseScreenPosition.x / width - 1.0f;
+        const float y = 1.0f - 2.0f * mouseScreenPosition.y / height;
+
+        // NDC -> clip space
+        glm::vec4 clipPosition(x, y, mouseScreenPosition.z, 1.0f);
+
+        // Clip space -> world space
+        glm::mat4 inverseViewProjection = glm::inverse(m_ProjectionMatrix * m_ViewMatrix);
+
+        glm::vec4 worldPosition = inverseViewProjection * clipPosition;
+
+        // Perspective divide
+        worldPosition /= worldPosition.w;
+
+        return glm::vec3(worldPosition);
+    }
+
+    DaddyEngine::Ray Camera::ScreenToRay(const glm::vec3& mouseScreenPosition)
+    {
+        // Screen -> World
+        glm::vec3 nearPoint = ScreenToWorldPoint(glm::vec3(mouseScreenPosition.x, mouseScreenPosition.y, -1.0f));
+        glm::vec3 farPoint = ScreenToWorldPoint(glm::vec3(mouseScreenPosition.x, mouseScreenPosition.y, 1.0f));
+
+        DaddyEngine::Ray ray;
+
+        ray.origin = nearPoint;
+        ray.direction = glm::normalize(farPoint - nearPoint);
+
+        return ray;
     }
 }

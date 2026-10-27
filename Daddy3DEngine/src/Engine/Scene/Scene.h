@@ -24,7 +24,8 @@ namespace DaddyEngine
 
 	public:
 
-		Scene(const std::string& sceneName = "default") : m_SceneName(sceneName), m_BasicShader("Daddy3DEngine/assets/shaders/basic.glsl")
+		Scene(const std::string& sceneName = "default")
+			: m_SceneName(sceneName), m_BasicShader("Daddy3DEngine/assets/shaders/basic.glsl")
 		{
 		}
 		virtual ~Scene() = default; // Crucial for virtual classes!

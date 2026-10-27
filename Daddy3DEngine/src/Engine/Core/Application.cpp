@@ -23,6 +23,7 @@ namespace DaddyEngine
 {
 	Application* Application::s_Instance = nullptr;
 	Camera* Application::m_EditorCamera = nullptr;
+	GLFWwindow* Application::m_Window = nullptr;
 
 	Application::Application()
 	{
@@ -144,6 +145,7 @@ namespace DaddyEngine
 			imguiLayer.OnImGuiRender(ts);
 
 			imguiLayer.End();
+			//std::cout << Input::GetMouseWorldPos().x << ", " << Input::GetMouseWorldPos().y << ", " << Input::GetMouseWorldPos().z << std::endl;
 
 			glfwSwapBuffers(m_Window);
 			glfwPollEvents();

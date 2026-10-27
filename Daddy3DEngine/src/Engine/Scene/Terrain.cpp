@@ -3,6 +3,12 @@
 #include "Engine/Renderer/DebugRenderer.h"
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
+#include "Engine/Maths/Ray.h"
+#include "Engine//Core/Input.h"
+#include "Engine/Core/Application.h"
+#include "Engine/Core/Camera.h"
+#include "Engine/Physics/Raycast.h"
+#include "Engine/Core/ImGui/ImGuiLayer.h"
 
 namespace DaddyEngine
 {
@@ -19,6 +25,8 @@ namespace DaddyEngine
 
 	void Terrain::GenerateTerrain()
 	{
+		m_Heightmap.assign(width * height, 0.0f);
+
 		std::vector<Vertex> vertices;
 		std::vector<unsigned int> indices;
 		// Vertices
@@ -29,9 +37,12 @@ namespace DaddyEngine
 				// TOP-LEFT is starting of terrain
 				Vertex vertex;
 
+				int index = GetIndex(x, z);
+
 				float xPos = spacing * x;
 				float zPos = spacing * z;
-				vertex.Position = glm::vec3(xPos, 0, zPos);
+				float yPos = m_Heightmap[index];
+				vertex.Position = glm::vec3(xPos, yPos, zPos);
 				vertex.Normal = glm::vec3(0.0f, 1.0f, 0.0f);
 				vertex.Color = glm::vec3(1.0f);
 
@@ -188,6 +199,47 @@ namespace DaddyEngine
 		}
 	}
 
+	void Terrain::EditTerrain()
+	{
+		if (!ImGuiLayer::g_MouseInsideScene)
+			return;
+
+		auto* camera = Application::Get().GetEditorCamera();
+
+		glm::vec2 sceneMouse = ImGuiLayer::g_SceneMousePosition;
+
+		Ray ray = camera->ScreenToRay(glm::vec3(sceneMouse.x, sceneMouse.y, 0.0f));
+
+		// Build this using your terrain's actual position,
+		// rotation and scale.
+
+		glm::mat4 inverseModel = glm::inverse(modelMatrix);
+
+		// Convert the world-space ray into local space.
+		glm::vec3 localOrigin = glm::vec3(inverseModel * glm::vec4(ray.origin, 1.0f));
+
+		glm::vec3 localDirection = glm::normalize(glm::vec3(inverseModel * glm::vec4(ray.direction, 0.0f)));
+
+		Ray localRay(localOrigin, localDirection);
+
+		// Terrain bounds in LOCAL space.
+		float maxX = spacing * (width - 1);
+		float maxZ = spacing * (height - 1);
+
+		glm::vec3 A(0.0f, 0.0f, 0.0f);
+		glm::vec3 B(maxX, 0.0f, 0.0f);
+		glm::vec3 C(0.0f, 0.0f, maxZ);
+		glm::vec3 D(maxX, 0.0f, maxZ);
+
+		if (Physics::Raycast::IntersectSquare(localRay, A, B, C, D, 10000.0f))
+		{
+			brush.position = glm::vec3(localRay.hitPoint);
+
+			if (Input::IsMouseButtonPressed(DADDY_MOUSE_BUTTON_LEFT))
+				ApplyBrush();
+		}
+	}
+
 	void Terrain::DrawNormals()
 	{
 		if (!m_Mesh || !drawNormals)
@@ -217,7 +269,7 @@ namespace DaddyEngine
 	void Terrain::DebugTerrainColor()
 	{
 		auto mat = std::make_shared<Material>();
-		mat->AlbedoColor = glm::vec3(1.0f);
+		mat->AlbedoColor = glm::vec3(0.85f, 0.85f, 0.85f);
 		m_Mesh->SetMaterial(mat);
 	}
 }

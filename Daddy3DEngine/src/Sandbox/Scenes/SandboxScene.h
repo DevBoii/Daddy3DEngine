@@ -8,7 +8,7 @@ namespace Sandbox
 	class SandboxScene : public DaddyEngine::Scene
 	{
 	private:
-
+		uint32_t rayEntity;
 	public:
 		SandboxScene() : DaddyEngine::Scene("Sandbox_Level") {}
 		virtual ~SandboxScene() override = default; // Crucial for virtual classes!

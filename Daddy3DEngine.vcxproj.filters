@@ -260,5 +260,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Daddy3DEngine\assets\shaders\basic.glsl" />
+    <None Include="Daddy3DEngine\assets\shaders\Terrain.glsl" />
   </ItemGroup>
 </Project>

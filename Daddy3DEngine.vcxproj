@@ -251,6 +251,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Daddy3DEngine\assets\shaders\basic.glsl" />
+    <None Include="Daddy3DEngine\assets\shaders\Terrain.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

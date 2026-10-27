@@ -13,6 +13,7 @@
 #include "Engine/Renderer/Transform.h"
 #include "Engine/Core/Assets/AssetManager.h"
 #include "Engine/Renderer/DebugRenderer.h"
+#include "Engine/Core/Input.h"
 
 #include <limits>
 namespace DaddyEngine
@@ -273,7 +274,7 @@ namespace DaddyEngine
 			{
 				component.DrawNormals();
 			}
-			if (!currentMode == 0)
+			if (currentMode != 0)
 			{
 				ImGui::DragFloat("Radius", &component.brush.radius, 0.1f, 0.1f, 100.0f);
 
@@ -281,12 +282,10 @@ namespace DaddyEngine
 
 				ImGui::Text("For Debug");
 				
-				DaddyEngine::DebugRenderer::DrawLine(component.brush.position, component.brush.position + glm::vec3(0, -1, 0), glm::vec3(0.1f, 0.4f, 0.7f));
+				DaddyEngine::DebugRenderer::DrawLine(glm::vec3(component.modelMatrix * glm::vec4(component.brush.position, 1.0f)), glm::vec3(component.modelMatrix * glm::vec4(component.brush.position, 1.0f)) + glm::vec3(0, -1, 0), glm::vec3(0.1f, 0.4f, 0.7f));
+				
 				ImGui::DragFloat3("Brush Position", &component.brush.position.x, 0.1f);
-				if (ImGui::Button("ApplyBrush", ImVec2(80, 20)))
-				{
-					component.ApplyBrush();
-				}
+				component.EditTerrain();
 			}
 
 			ImGui::Separator();

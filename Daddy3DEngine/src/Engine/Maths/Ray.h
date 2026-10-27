@@ -10,5 +10,6 @@ namespace DaddyEngine
 		glm::vec3 direction;
 		glm::vec3 hitPoint;
 		glm::vec3 normal;
+		float distance;
 	};
 }

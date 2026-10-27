@@ -29,6 +29,14 @@ namespace DaddyEngine
 		std::shared_ptr<Mesh> m_Mesh;
 		void DebugTerrainColor();
 
+		// Authoritative terrain heights
+		std::vector<float> m_Heightmap;
+
+		int GetIndex(int x, int z) const
+		{
+			return z * width + x;
+		}
+
 	public:
 
 		bool drawNormals = false;
@@ -36,12 +44,17 @@ namespace DaddyEngine
 		int height;
 		float spacing = 0.25f;
 
+		glm::vec3 position = glm::vec3(0);
+		glm::mat4 modelMatrix;
+
 		Brush brush;
 
 		Terrain(int Width = 32, int Height = 32);
 		void GenerateTerrain();
 		void Sculpt(const glm::vec3& worldHitPos, const float radius, const float intensity, const bool smoothFalloff = true);
 		void ApplyBrush();
+		void EditTerrain();
+		void Debug();
 		void RecalculateNormals();
 		void DrawNormals();
 		std::shared_ptr<Mesh> GetMesh() { return m_Mesh;}

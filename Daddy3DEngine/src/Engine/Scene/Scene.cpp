@@ -80,6 +80,8 @@ namespace DaddyEngine
 			if (m_Registry.HasComponent<Terrain>(entity))
 			{
 				auto& terrainComponent = m_Registry.GetComponent<Terrain>(entity);
+				terrainComponent.position = m_Registry.GetComponent<Transform>(entity).Position;
+				terrainComponent.modelMatrix = m_Registry.GetComponent<Transform>(entity).GetTransform();
 				Renderer::SubmitTerrain(*terrainComponent.GetMesh(), terrainComponent.GetMesh()->GetMaterial(), m_BasicShader, transformComponent.GetTransform());
 			}
 		}

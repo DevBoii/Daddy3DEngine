@@ -23,11 +23,17 @@ namespace DaddyEngine
         void End();      // End of the frame (Rendering)
 
         void OnImGuiRender(Timestep ts); // Where your actual windows live
-        static bool g_SceneWindowHovered;
         DaddyEditor::EditorLayer s_EditorPanel;
         ContentBrowserPanel contentBrowserPanel;
         ConsolePanel consolePanel;
         EnvironmentPanel environmentPanel;
+
+        static bool g_SceneWindowHovered;
+
+        static glm::vec2 g_SceneViewportPosition;
+        static glm::vec2 g_SceneViewportSize;
+        static glm::vec2 g_SceneMousePosition;
+        static bool g_MouseInsideScene;
 
     private:
         DaddyEngine::Application& m_App;

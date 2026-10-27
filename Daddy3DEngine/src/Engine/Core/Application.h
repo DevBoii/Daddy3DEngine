@@ -31,10 +31,10 @@ namespace DaddyEngine
 		bool m_running = false;
 
 		static Application& Get() { return *s_Instance; }	// Singleton
-		GLFWwindow* GetWindow() const { return m_Window; }
-		inline int GetWidth() const { return WIDTH; }
-		inline int GetHeight() const { return HEIGHT; }
+		static GLFWwindow* GetWindow() { return m_Window; }
 		static Camera* GetEditorCamera() { return m_EditorCamera; }
+		int GetWidth() const { return WIDTH; }
+		int GetHeight() const { return HEIGHT; }
 		Framebuffer* GetFramebuffer() const { return m_Framebuffer; }
 
 		int GetWidth();
@@ -42,7 +42,7 @@ namespace DaddyEngine
 
 	private:
 		static Application* s_Instance;
-		GLFWwindow* m_Window;
+		static GLFWwindow* m_Window;
 		static Camera* m_EditorCamera;
 		Framebuffer* m_Framebuffer;
 	};
